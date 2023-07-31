@@ -1,28 +1,20 @@
-# Laravel Image Alternative
+# Laravel Single Docker Image Alternative
 
-this image using image from serversideup
+base image using image from serversideup/php 
 
-## Getting Started
+this single docker image already contains nginx, php-fpm, scheduler and queue (horizon)
 
-- clone your laravel aplication like this
+all this process worked using s6-overlay
 
-    ```bash
-    git clone {git repo url} build
-    ```
+## Some reference about s6-overlay
+- https://darkghosthunter.medium.com/how-to-understand-s6-overlay-v3-95c81c04f075
+- https://github.com/just-containers/s6-overlay
+- https://serversideup.net/open-source/docker-php/docs/getting-started/these-images-vs-others#whats-s6-overlay
 
-- create file env-prod for your .env laravel aplication in root dir
-- run `docker-compose up -d --build`
-- cek your app from `http://your-domain:3200`
+## Screenshot ps -ax from the container
+![image](https://github.com/jhonoryza/serversideup-laravel/assets/5910636/1940de11-2722-4faa-8826-169310d41bd3)
 
-## .env files
-- env-prod file will copy to the container when build image process
-- so you need to rebuild the image every time there is a changes in this file
-
-## queue and scheduler
-- scheduler is worked automaticaly in this container 
-- you need `laravel/horizon` package so queue will worked automaticaly in this container, to installed it run `composer require laravel/horizon`
-
-## before clone laravel aplication 
+## Before cloning your laravel aplication 
 - create serversideup.Dockerfile in your laravel root dir, something like this
 
     ```Dockerfile
@@ -73,3 +65,26 @@ this image using image from serversideup
     
     RUN chmod -R 755 /etc/s6-overlay/
     ```
+
+## Getting Started
+
+- clone your laravel aplication like this
+
+    ```bash
+    git clone {git repo url} build
+    ```
+
+- create file env-prod for your .env laravel aplication in root dir
+- run `docker-compose up -d --build`
+- cek your app from `http://your-domain:3200`
+
+## Laravel .env files
+- env-prod file will be copied to the container when build image process happen
+- so you need to rebuild the image every time there is a changes in this file
+
+## Laravel queue and scheduler
+- scheduler is worked automaticaly in this container 
+- you need `laravel/horizon` package so queue will worked automaticaly in this container, to installed it run `composer require laravel/horizon`
+
+## Change PHP version
+- you can change php version from your Dockerfile and just rebuild it
