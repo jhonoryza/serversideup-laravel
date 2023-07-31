@@ -1,0 +1,4 @@
+#!/bin/bash
+
+echo "run scheduler .."
+su webuser -c "php $WEBUSER_HOME/artisan schedule:work --verbose --no-interaction" & sleep 1m

@@ -1,0 +1,4 @@
+#!/bin/bash
+
+echo "running horizon .."
+su webuser -c "php $WEBUSER_HOME/artisan horizon"
