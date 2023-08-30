@@ -20,17 +20,9 @@ all this process worked using s6-overlay
 
 - create `env` file, and fill it with your laravel env variables
 
-- run `base64 env` and copy the result and paste in the next step to LARAVEL_ENV value
+- check docker-compose.yml file, you can adjust networks, ports, image and container name as you want
 
-- build docker image
-
-    ```bash
-    docker build --build-arg="LARAVEL_ENV=paste_here" --build-arg="PHP_VERSION=8.0" --build-arg="WORKER=worker" -t laravel-app:latest .
-    ``` 
-
-you can change WORKER argument to `horizon` if you are using horizon
-
-- check docker-compose.yml file, you can adjust networks or ports as you want
+- build docker image run `./build.sh`
 
 - running the container 
 

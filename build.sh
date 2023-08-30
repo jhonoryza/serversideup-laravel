@@ -20,41 +20,69 @@ function prompt_with_default {
 	echo "$input"
 }
 
-options=("worker" "horizon")
-
-# Prompt the user php container name
+# Prompt image name
 name=$(prompt_with_default "Enter image name: (example: laravel-app:latest)")
 
-# Prompt the user php version
+# Prompt php version
 php=$(prompt_with_default "Enter your php version (example: 8.0):")
 
-PS3="Select your worker: "
-select choice in "${options[@]}"; do
-	case $choice in
-	"worker")
-		worker="worker"
-		break
-		;;
-	"horizon")
-		worker="horizon"
-		break
-		;;
-	*)
-		echo "Invalid option."
-		exit 1
-		;;
-	esac
-done
+enable_scheduler=$(prompt_with_default "Enable scheduler? (y/n):" "y")
+enable_worker=$(prompt_with_default "Enable background job? (y/n):" "y")
 
-# Prompt the user laravel environment
+# Prompt worker options
+if [ "$enable_worker" == "y" ]; then
+	options=("worker" "horizon")
+	PS3="Select your worker: "
+	select choice in "${options[@]}"; do
+		case $choice in
+		"worker")
+			worker="worker"
+			break
+			;;
+		"horizon")
+			worker="horizon"
+			break
+			;;
+		*)
+			echo "Invalid option."
+			exit 1
+			;;
+		esac
+	done
+fi
+
+# encode laravel environment and insert it to the container
 env_file="$PWD/env"
 laravel_env=$(base64 <"$env_file")
 
-command_string="docker build --build-arg=\"LARAVEL_ENV=%s\" --build-arg=\"PHP_VERSION=%s\" --build-arg=\"WORKER=%s\" -t %s ."
+# if enable_worker and enable_scheduler are set
+if [ "$enable_worker" == "y" ] && [ "$enable_scheduler" == "y" ]; then
 
-formatted_command=$(printf "$command_string" "$laravel_env" "$php" "$worker" "$name")
+  command_string="docker build --build-arg=\"LARAVEL_ENV=%s\" --build-arg=\"PHP_VERSION=%s\" --build-arg=\"WORKER=%s\" -t %s -f Dockerfile ."
+  formatted_command=$(printf "$command_string" "$laravel_env" "$php" "$worker" "$name")
+
+# if enable_worker is set and enable_scheduler is not
+else if [ "$enable_worker" == "y" ] && [ "$enable_scheduler" == "n" ]; then
+
+  command_string="docker build --build-arg=\"LARAVEL_ENV=%s\" --build-arg=\"PHP_VERSION=%s\" ---build-arg=\"WORKER=%s\" -t %s -f only_worker.Dockerfile ."
+  formatted_command=$(printf "$command_string" "$laravel_env" "$php" "$worker" "$name")
+
+# if enable_scheduler is set and enable_worker is not
+else if [ "$enable_scheduler" == "y" ] && [ "$enable_worker" == "n" ]; then
+
+  command_string="docker build --build-arg=\"LARAVEL_ENV=%s\" --build-arg=\"PHP_VERSION=%s\"-t %s -f only_scheduler.Dockerfile ."
+  formatted_command=$(printf "$command_string" "$laravel_env" "$php" "$name")
+
+# if enable_scheduler and enable_worker are not set
+else
+
+  command_string="docker build --build-arg=\"LARAVEL_ENV=%s\" --build-arg=\"PHP_VERSION=%s\"-t %s -f non_worker_scheduler.Dockerfile ."
+  formatted_command=$(printf "$command_string" "$laravel_env" "$php" "$name")
+
+fi
 
 # Print the formatted command
 echo "run command: $formatted_command"
 
+# Run the formatted command
 eval "$formatted_command"
