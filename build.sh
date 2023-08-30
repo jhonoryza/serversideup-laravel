@@ -7,7 +7,7 @@ function prompt_with_default {
 	local input
 
 	while true; do
-		read -p "$prompt_message" input
+		read -p "$prompt_message  " input
 		input=${input:-$default_value}
 
 		if [ -n "$input" ]; then
@@ -24,8 +24,6 @@ options=("worker" "horizon")
 
 # Prompt the user php container name
 name=$(prompt_with_default "Enter image name: (example: laravel-app:latest)")
-# read -p "Enter your build image name (default: laravel-app:latest): " image_name
-# image_name=${image_name:-laravel-app:latest}
 
 # Prompt the user php version
 php=$(prompt_with_default "Enter your php version (example: 8.0):")
@@ -48,10 +46,15 @@ select choice in "${options[@]}"; do
 	esac
 done
 
-# Prompt the user worker choice
-# worker=$(prompt_with_default "Enter your worker (example: horizon or worker):")
-
 # Prompt the user laravel environment
-laravel_env=$(prompt_with_default "Enter your encoded laravel env:")
+env_file="$PWD/env"
+laravel_env=$(base64 <"$env_file")
 
-docker build --build-arg="LARAVEL_ENV=$laravel_env" --build-arg="PHP_VERSION=$php" --build-arg="WORKER=$worker" -t $image_name .
+command_string="docker build --build-arg=\"LARAVEL_ENV=%s\" --build-arg=\"PHP_VERSION=%s\" --build-arg=\"WORKER=%s\" -t %s ."
+
+formatted_command=$(printf "$command_string" "$laravel_env" "$php" "$worker" "$image_name")
+
+# Print the formatted command
+echo "run command: $formatted_command"
+
+eval "$formatted_command"
