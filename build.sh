@@ -71,25 +71,25 @@ laravel_env=$(base64 <"$env_file")
 # if enable_worker and enable_scheduler are set
 if [ "$enable_worker" == "y" ] && [ "$enable_scheduler" == "y" ]; then
 
-  command_string="docker build --build-arg=\"LARAVEL_ENV=%s\" --build-arg=\"PHP_VERSION=%s\" --build-arg=\"WORKER=%s\" -t %s -f Dockerfile ."
+  command_string="docker build --build-arg=\"LARAVEL_ENV=%s\" --build-arg=\"PHP_VERSION=%s\" --build-arg=\"WORKER=%s\" -f Dockerfile -t %s ."
   formatted_command=$(printf "$command_string" "$laravel_env" "$php" "$worker" "$name")
 
 # if enable_worker is set and enable_scheduler is not
 else if [ "$enable_worker" == "y" ] && [ "$enable_scheduler" == "n" ]; then
 
-  command_string="docker build --build-arg=\"LARAVEL_ENV=%s\" --build-arg=\"PHP_VERSION=%s\" ---build-arg=\"WORKER=%s\" -t %s -f only_worker.Dockerfile ."
+  command_string="docker build --build-arg=\"LARAVEL_ENV=%s\" --build-arg=\"PHP_VERSION=%s\" --build-arg=\"WORKER=%s\" -f only_worker.Dockerfile -t %s ."
   formatted_command=$(printf "$command_string" "$laravel_env" "$php" "$worker" "$name")
 
 # if enable_scheduler is set and enable_worker is not
 else if [ "$enable_scheduler" == "y" ] && [ "$enable_worker" == "n" ]; then
 
-  command_string="docker build --build-arg=\"LARAVEL_ENV=%s\" --build-arg=\"PHP_VERSION=%s\"-t %s -f only_scheduler.Dockerfile ."
+  command_string="docker build --build-arg=\"LARAVEL_ENV=%s\" --build-arg=\"PHP_VERSION=%s\" -f only_scheduler.Dockerfile -t %s ."
   formatted_command=$(printf "$command_string" "$laravel_env" "$php" "$name")
 
 # if enable_scheduler and enable_worker are not set
 else
 
-  command_string="docker build --build-arg=\"LARAVEL_ENV=%s\" --build-arg=\"PHP_VERSION=%s\"-t %s -f non_worker_scheduler.Dockerfile ."
+  command_string="docker build --build-arg=\"LARAVEL_ENV=%s\" --build-arg=\"PHP_VERSION=%s\" -f non_worker_scheduler.Dockerfile -t %s ."
   formatted_command=$(printf "$command_string" "$laravel_env" "$php" "$name")
 
 fi
@@ -98,5 +98,5 @@ fi
 echo "run command: $formatted_command"
 
 # Run the formatted command
-# eval "$formatted_command"
+eval "$formatted_command"
 
