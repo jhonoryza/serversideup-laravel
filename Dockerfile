@@ -1,30 +1,20 @@
 ARG PHP_VERSION
 ARG WORKER
+ARG LARAVEL_ENV
 
 FROM serversideup/php:${PHP_VERSION}-fpm-nginx as base
-
-# install some packages
-#RUN apt update -y && apt install vim curl -y
 
 # copy Application
 WORKDIR /var/www/html/
 COPY ./src ./
 
 # copy Application Environment
-#COPY ./env-prod .env
+RUN echo ${LARAVEL_ENV} > encoded-env
+RUN base64 -d encoded-env > .env
+RUN rm encoded-env
 
 # install vendor
 RUN composer install --optimize-autoloader --no-interaction --no-plugins --no-scripts --prefer-dist --no-dev
-
-# Application optimization
-#RUN php artisan key:generate
-#RUN php artisan clear-compiled
-#RUN php artisan optimize
-
-# Publish Laravel LiveWire assets
-# you can comment this two lines if not using laravel/livewire package
-#RUN php artisan livewire:publish --assets
-#RUN php artisan livewire:discover
 
 # Overide permission
 RUN chown -R webuser:webgroup ./

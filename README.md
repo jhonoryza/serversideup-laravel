@@ -17,15 +17,18 @@ all this process worked using s6-overlay
     ```bash
     git clone https://github.com/laravel/laravel.git src
     ```
+
+- create `env` file, and fill it with your laravel env variables
+
+- run `base64 env` and copy the result and paste in the next step to LARAVEL_ENV value
+
 - build docker image
 
     ```bash
-    docker build --build-arg="PHP_VERSION=8.0" --build-arg="WORKER=worker" -t laravel-app:latest .
+    docker build --build-arg="LARAVEL_ENV=paste_here" --build-arg="PHP_VERSION=8.0" --build-arg="WORKER=worker" -t laravel-app:latest .
     ``` 
 
-you can change WORKER argument to `horizon` if you are using horizon   
-
-- after build docker image successfully create `env` file, and fill it with your laravel env variables
+you can change WORKER argument to `horizon` if you are using horizon
 
 - check docker-compose.yml file, you can adjust networks or ports as you want
 
@@ -39,6 +42,31 @@ you can change WORKER argument to `horizon` if you are using horizon
 
 ```bash
   docker-compose down
+```
+
+## Running artisan command
+
+- you need to login to the container using this command 
+
+```bash
+  docker exec -it -u webuser laravel-app bash
+```
+
+which laravel-app is the container name, you need to change these if you change the container name 
+
+- some common artisan commands:
+
+```bash
+  php artisan key:generate
+  php artisan clear-compiled
+  php artisan optimize
+  php artisan cache:clear 
+  php artisan config:clear 
+  php artisan route:clear 
+  php artisan view:clear 
+  
+  php artisan livewire:publish --assets
+  php artisan livewire:discover
 ```
 
 ## Some reference about s6-overlay

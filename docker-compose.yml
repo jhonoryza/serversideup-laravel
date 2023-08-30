@@ -8,39 +8,40 @@ networks:
 services:
   app:
     image: laravel-app:latest
+    container_name: laravel-app
     ports:
       - "80:80"
     environment:
       PHP_POOL_NAME: "my-app_php"
       SSL_MODE: "off"
-    volumes:
-      - ./env:/var/www/html/.env
     networks:
       - backend
-  # queue:
-  #   image: jhonoryza/laravel:latest
-  #   # Switch to "webuser" before running `php artisan`
-  #   # Declare command in list manner for environment variable expansion
-  #   command:
-  #     [
-  #       "su",
-  #       "webuser",
-  #       "-c",
-  #       "php artisan queue:work --tries=3"
-  #     ]
-  #   environment:
-  #     PHP_POOL_NAME: "my-app_queue"
-  #     SSL_MODE: "off"
-  #   networks:
-  #     - backend
-  #
-  # task:
-  #   image: jhonoryza/laravel:latest
-  #   # Switch to "webuser" before running `php artisan`
-  #   # Declare command in list manner for environment variable expansion
-  #   command: [ "su", "webuser", "-c", "php artisan schedule:work" ]
-  #   environment:
-  #     PHP_POOL_NAME: "my-app_task"
-  #     SSL_MODE: "off"
-  #   networks:
-  #     - backend
+    # volumes:
+    #   - ./env:/var/www/html/.env
+    # queue:
+    #   image: jhonoryza/laravel:latest
+    #   # Switch to "webuser" before running `php artisan`
+    #   # Declare command in list manner for environment variable expansion
+    #   command:
+    #     [
+    #       "su",
+    #       "webuser",
+    #       "-c",
+    #       "php artisan queue:work --tries=3"
+    #     ]
+    #   environment:
+    #     PHP_POOL_NAME: "my-app_queue"
+    #     SSL_MODE: "off"
+    #   networks:
+    #     - backend
+    #
+    # task:
+    #   image: jhonoryza/laravel:latest
+    #   # Switch to "webuser" before running `php artisan`
+    #   # Declare command in list manner for environment variable expansion
+    #   command: [ "su", "webuser", "-c", "php artisan schedule:work" ]
+    #   environment:
+    #     PHP_POOL_NAME: "my-app_task"
+    #     SSL_MODE: "off"
+    #   networks:
+    #     - backend
