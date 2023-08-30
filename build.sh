@@ -56,12 +56,12 @@ env_file="$PWD/env"
 
 # Check if the file exists and is not empty
 if [ ! -f "$env_file" ]; then
-    echo "Error: The specified environment file does not exist."
+    echo "Error: The specified environment file does not exist. please create env file and fill it with laravel .env"
     exit 1
 fi
 
 if [ ! -s "$env_file" ]; then
-    echo "Error: The specified environment file is empty."
+    echo "Error: The specified environment file is empty. please create env file and fill it with laravel .env"
     exit 1
 fi
 
@@ -98,5 +98,5 @@ fi
 echo "run command: $formatted_command"
 
 # Run the formatted command
-eval "$formatted_command"
+# eval "$formatted_command"
 
