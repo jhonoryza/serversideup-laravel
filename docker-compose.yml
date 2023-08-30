@@ -1,41 +1,47 @@
 version: '3'
 
 networks:
-  coolify:
-    external: true
+  backend:
+    name: backend
+    driver: bridge
 
 services:
-  php:
-    image: jhonoryza/laravel-shop-filament:latest
-    build:
-      context: .
-      dockerfile: ./build/serversideup.Dockerfile
+  app:
+    image: laravel-app:latest
+    container_name: laravel-app
     ports:
-      - "3200:80"
+      - "80:80"
     environment:
       PHP_POOL_NAME: "my-app_php"
       SSL_MODE: "off"
     networks:
-      - coolify
-
-      #  queue:
-      #    image: jhonoryza/laravel-shop-filament:latest
-      #    # Switch to "webuser" before running `php artisan`
-      #    # Declare command in list manner for environment variable expansion
-      #    command: ["su", "webuser", "-c", "php artisan queue:work --tries=3"]
-      #    environment:
-      #      PHP_POOL_NAME: "my-app_queue"
-      #      SSL_MODE: "off"
-      #    networks:
-      #      - coolify
-      #
-      #  task:
-      #    image: jhonoryza/laravel-shop-filament:latest
-      #    # Switch to "webuser" before running `php artisan`
-      #    # Declare command in list manner for environment variable expansion
-      #    command: ["su", "webuser", "-c", "php artisan schedule:work"]
-      #    environment:
-      #      PHP_POOL_NAME: "my-app_task"
-      #      SSL_MODE: "off"
-      #    networks:
-      #      - coolify
+      - backend
+    # volumes:
+    #   - ./env:/var/www/html/.env
+    # queue:
+    #   image: jhonoryza/laravel:latest
+    #   # Switch to "webuser" before running `php artisan`
+    #   # Declare command in list manner for environment variable expansion
+    #   command:
+    #     [
+    #       "su",
+    #       "webuser",
+    #       "-c",
+    #       "php artisan queue:work --tries=3"
+    #     ]
+    #   environment:
+    #     PHP_POOL_NAME: "my-app_queue"
+    #     SSL_MODE: "off"
+    #   networks:
+    #     - backend
+    #
+    # task:
+    #   image: jhonoryza/laravel:latest
+    #   # Switch to "webuser" before running `php artisan`
+    #   # Declare command in list manner for environment variable expansion
+    #   command: [ "su", "webuser", "-c", "php artisan schedule:work" ]
+    #   environment:
+    #     PHP_POOL_NAME: "my-app_task"
+    #     SSL_MODE: "off"
+    #   networks:
+    #     - backend

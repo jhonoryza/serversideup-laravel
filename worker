@@ -1,0 +1,4 @@
+#!/bin/bash
+
+echo "running worker .."
+su webuser -c "php /var/www/html/artisan queue:work --tries=3"
