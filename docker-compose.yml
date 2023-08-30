@@ -7,17 +7,14 @@ networks:
 
 services:
   app:
-    image: jhonoryza/laravel:latest
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: laravel-app:latest
     ports:
       - "80:80"
-      - "443:443"
-      - "9000:9000"
     environment:
       PHP_POOL_NAME: "my-app_php"
       SSL_MODE: "off"
+    volumes:
+      - ./env:/var/www/html/.env
     networks:
       - backend
   # queue:

@@ -10,11 +10,36 @@ all this process worked using s6-overlay
 
     ```bash
     git clone https://github.com/jhonoryza/serversideup-laravel.git
+    cd serversideup-laravel
     ```
+- clone your laravel app repository to src folder
 
-## Build Argument
-- `docker compose build --build-arg PHP_VERSION=8.2 --build-arg WORKER=worker` 
-- if you use horizon change to `--build-arg WORKER=horizon` 
+    ```bash
+    git clone https://github.com/laravel/laravel.git src
+    ```
+- build docker image
+
+    ```bash
+    docker build --build-arg="PHP_VERSION=8.0" --build-arg="WORKER=worker" -t laravel-app:latest .
+    ``` 
+
+you can change WORKER argument to `horizon` if you are using horizon   
+
+- after build docker image successfully create `env` file, and fill it with your laravel env variables
+
+- check docker-compose.yml file, you can adjust networks or ports as you want
+
+- running the container 
+
+```bash
+  docker-compose up -d
+```
+
+- to stop the container 
+
+```bash
+  docker-compose down
+```
 
 ## Some reference about s6-overlay
 - https://darkghosthunter.medium.com/how-to-understand-s6-overlay-v3-95c81c04f075
