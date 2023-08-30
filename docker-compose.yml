@@ -1,41 +1,49 @@
 version: '3'
 
 networks:
-  coolify:
-    external: true
+  backend:
+    name: backend
+    driver: bridge
 
 services:
-  php:
-    image: jhonoryza/laravel-shop-filament:latest
+  app:
+    image: jhonoryza/laravel:latest
     build:
       context: .
-      dockerfile: ./build/serversideup.Dockerfile
+      dockerfile: Dockerfile
     ports:
-      - "3200:80"
+      - "80:80"
+      - "443:443"
+      - "9000:9000"
     environment:
       PHP_POOL_NAME: "my-app_php"
       SSL_MODE: "off"
     networks:
-      - coolify
-
-      #  queue:
-      #    image: jhonoryza/laravel-shop-filament:latest
-      #    # Switch to "webuser" before running `php artisan`
-      #    # Declare command in list manner for environment variable expansion
-      #    command: ["su", "webuser", "-c", "php artisan queue:work --tries=3"]
-      #    environment:
-      #      PHP_POOL_NAME: "my-app_queue"
-      #      SSL_MODE: "off"
-      #    networks:
-      #      - coolify
-      #
-      #  task:
-      #    image: jhonoryza/laravel-shop-filament:latest
-      #    # Switch to "webuser" before running `php artisan`
-      #    # Declare command in list manner for environment variable expansion
-      #    command: ["su", "webuser", "-c", "php artisan schedule:work"]
-      #    environment:
-      #      PHP_POOL_NAME: "my-app_task"
-      #      SSL_MODE: "off"
-      #    networks:
-      #      - coolify
+      - backend
+  # queue:
+  #   image: jhonoryza/laravel:latest
+  #   # Switch to "webuser" before running `php artisan`
+  #   # Declare command in list manner for environment variable expansion
+  #   command:
+  #     [
+  #       "su",
+  #       "webuser",
+  #       "-c",
+  #       "php artisan queue:work --tries=3"
+  #     ]
+  #   environment:
+  #     PHP_POOL_NAME: "my-app_queue"
+  #     SSL_MODE: "off"
+  #   networks:
+  #     - backend
+  #
+  # task:
+  #   image: jhonoryza/laravel:latest
+  #   # Switch to "webuser" before running `php artisan`
+  #   # Declare command in list manner for environment variable expansion
+  #   command: [ "su", "webuser", "-c", "php artisan schedule:work" ]
+  #   environment:
+  #     PHP_POOL_NAME: "my-app_task"
+  #     SSL_MODE: "off"
+  #   networks:
+  #     - backend
