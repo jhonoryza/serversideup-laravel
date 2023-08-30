@@ -52,7 +52,7 @@ laravel_env=$(base64 <"$env_file")
 
 command_string="docker build --build-arg=\"LARAVEL_ENV=%s\" --build-arg=\"PHP_VERSION=%s\" --build-arg=\"WORKER=%s\" -t %s ."
 
-formatted_command=$(printf "$command_string" "$laravel_env" "$php" "$worker" "$image_name")
+formatted_command=$(printf "$command_string" "$laravel_env" "$php" "$worker" "$name")
 
 # Print the formatted command
 echo "run command: $formatted_command"
