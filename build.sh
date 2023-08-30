@@ -99,3 +99,4 @@ echo "run command: $formatted_command"
 
 # Run the formatted command
 eval "$formatted_command"
+
