@@ -51,8 +51,21 @@ if [ "$enable_worker" == "y" ]; then
 	done
 fi
 
-# encode laravel environment and insert it to the container
+# Read env file
 env_file="$PWD/env"
+
+# Check if the file exists and is not empty
+if [ ! -f "$env_file" ]; then
+    echo "Error: The specified environment file does not exist."
+    exit 1
+fi
+
+if [ ! -s "$env_file" ]; then
+    echo "Error: The specified environment file is empty."
+    exit 1
+fi
+
+# encode this env file to base64 
 laravel_env=$(base64 <"$env_file")
 
 # if enable_worker and enable_scheduler are set
