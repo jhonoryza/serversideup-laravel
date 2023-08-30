@@ -56,41 +56,41 @@ env_file="$PWD/env"
 
 # Check if the file exists and is not empty
 if [ ! -f "$env_file" ]; then
-    echo "Error: The specified environment file does not exist. please create env file and fill it with laravel .env"
-    exit 1
+	echo "Error: The specified environment file does not exist. please create env file and fill it with laravel .env"
+	exit 1
 fi
 
 if [ ! -s "$env_file" ]; then
-    echo "Error: The specified environment file is empty. please create env file and fill it with laravel .env"
-    exit 1
+	echo "Error: The specified environment file is empty. please create env file and fill it with laravel .env"
+	exit 1
 fi
 
-# encode this env file to base64 
+# encode this env file to base64
 laravel_env=$(base64 <"$env_file")
 
 # if enable_worker and enable_scheduler are set
 if [ "$enable_worker" == "y" ] && [ "$enable_scheduler" == "y" ]; then
 
-  command_string="docker build --build-arg=\"LARAVEL_ENV=%s\" --build-arg=\"PHP_VERSION=%s\" --build-arg=\"WORKER=%s\" -f Dockerfile -t %s ."
-  formatted_command=$(printf "$command_string" "$laravel_env" "$php" "$worker" "$name")
+	command_string="docker build --build-arg=\"LARAVEL_ENV=%s\" --build-arg=\"PHP_VERSION=%s\" --build-arg=\"WORKER=%s\" -f Dockerfile -t %s ."
+	formatted_command=$(printf "$command_string" "$laravel_env" "$php" "$worker" "$name")
 
 # if enable_worker is set and enable_scheduler is not
-else if [ "$enable_worker" == "y" ] && [ "$enable_scheduler" == "n" ]; then
+elif [ "$enable_worker" == "y" ] && [ "$enable_scheduler" == "n" ]; then
 
-  command_string="docker build --build-arg=\"LARAVEL_ENV=%s\" --build-arg=\"PHP_VERSION=%s\" --build-arg=\"WORKER=%s\" -f only_worker.Dockerfile -t %s ."
-  formatted_command=$(printf "$command_string" "$laravel_env" "$php" "$worker" "$name")
+	command_string="docker build --build-arg=\"LARAVEL_ENV=%s\" --build-arg=\"PHP_VERSION=%s\" --build-arg=\"WORKER=%s\" -f only_worker.Dockerfile -t %s ."
+	formatted_command=$(printf "$command_string" "$laravel_env" "$php" "$worker" "$name")
 
 # if enable_scheduler is set and enable_worker is not
-else if [ "$enable_scheduler" == "y" ] && [ "$enable_worker" == "n" ]; then
+elif [ "$enable_scheduler" == "y" ] && [ "$enable_worker" == "n" ]; then
 
-  command_string="docker build --build-arg=\"LARAVEL_ENV=%s\" --build-arg=\"PHP_VERSION=%s\" -f only_scheduler.Dockerfile -t %s ."
-  formatted_command=$(printf "$command_string" "$laravel_env" "$php" "$name")
+	command_string="docker build --build-arg=\"LARAVEL_ENV=%s\" --build-arg=\"PHP_VERSION=%s\" -f only_scheduler.Dockerfile -t %s ."
+	formatted_command=$(printf "$command_string" "$laravel_env" "$php" "$name")
 
 # if enable_scheduler and enable_worker are not set
 else
 
-  command_string="docker build --build-arg=\"LARAVEL_ENV=%s\" --build-arg=\"PHP_VERSION=%s\" -f non_worker_scheduler.Dockerfile -t %s ."
-  formatted_command=$(printf "$command_string" "$laravel_env" "$php" "$name")
+	command_string="docker build --build-arg=\"LARAVEL_ENV=%s\" --build-arg=\"PHP_VERSION=%s\" -f non_worker_scheduler.Dockerfile -t %s ."
+	formatted_command=$(printf "$command_string" "$laravel_env" "$php" "$name")
 
 fi
 
@@ -99,4 +99,3 @@ echo "run command: $formatted_command"
 
 # Run the formatted command
 eval "$formatted_command"
-
