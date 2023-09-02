@@ -15,7 +15,7 @@ all this process worked using s6-overlay
 - clone your laravel app repository to src folder
 
     ```bash
-    git clone https://github.com/laravel/laravel.git src
+    composer create-project laravel/laravel src
     ```
 
 - create `env` file, and fill it with your laravel env variables
