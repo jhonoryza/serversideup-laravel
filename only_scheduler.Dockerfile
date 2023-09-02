@@ -1,5 +1,4 @@
 ARG PHP_VERSION
-ARG LARAVEL_ENV
 
 FROM serversideup/php:${PHP_VERSION}-fpm-nginx as base
 
@@ -8,7 +7,9 @@ WORKDIR /var/www/html/
 COPY ./src ./
 
 # copy Application Environment
-RUN echo ${LARAVEL_ENV} > encoded-env
+ARG LARAVEL_ENV
+ENV LARAVEL_ENV=${LARAVEL_ENV}
+RUN echo $LARAVEL_ENV > encoded-env
 RUN base64 -d encoded-env > .env
 RUN rm encoded-env
 
