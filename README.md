@@ -22,7 +22,7 @@ all this process worked using s6-overlay
 
 - check docker-compose.yml file, you can adjust networks, ports, image and container name as you want
 
-- build docker image run `./build.sh`
+- build docker image run `./build.sh` or run with argument `bash build.sh laravel-app:latest 8.0 n n`
 
 - running the container 
 
