@@ -5,29 +5,39 @@ function prompt_with_default {
 	local prompt_message="$1"
 	local default_value="$2"
 	local input
+        
+	if [ -z "$default_value" ]; then
+		while true; do
+			read -p "$prompt_message" input
+			input="${input:-$default_value}"
 
-	while true; do
-		read -p "$prompt_message  " input
-		input=${input:-$default_value}
-
-		if [ -n "$input" ]; then
-			break
-		else
-			echo "Input is required. Please provide a value."
-		fi
-	done
+			if [ -n "$input" ]; then
+				break
+			else
+				echo "Input is required. Please provide a value."
+			fi
+		done
+	else 
+		input=$default_value
+	fi 
 
 	echo "$input"
 }
 
+default_image_name="${1:-}"
+default_php_version="${2:-}"
+default_enable_scheduler="${3:-}"
+default_enable_worker="${4:-}"
+
 # Prompt image name
-name=$(prompt_with_default "Enter image name: (example: laravel-app:latest)")
+name=$(prompt_with_default "Enter image name. example laravel-app:latest : " "$default_image_name")
 
 # Prompt php version
-php=$(prompt_with_default "Enter your php version (example: 8.0):")
+php=$(prompt_with_default "Enter your php version. example 8.0 : " "$default_php_version")
 
-enable_scheduler=$(prompt_with_default "Enable scheduler? (y/n):" "y")
-enable_worker=$(prompt_with_default "Enable background job? (y/n):" "y")
+enable_scheduler=$(prompt_with_default "Enable scheduler? (y/n) : " "$default_enable_scheduler")
+
+enable_worker=$(prompt_with_default "Enable background job? (y/n) : " "$default_enable_worker")
 
 # Prompt worker options
 if [ "$enable_worker" == "y" ]; then
